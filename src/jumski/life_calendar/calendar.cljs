@@ -10,14 +10,14 @@
 
 (defn week->type [week birth-date]
   (cond
-    (before-life-week? week birth-date) :<
-    (life-week? week birth-date) :=
-    :else :>))
+    (before-life-week? week birth-date) :blank
+    (life-week? week birth-date) :lived
+    :else :not-lived))
 
 (defn life-years [birth-date]
   (let [birth-year-date (-> birth-date (t/floor t/year))
         life-years (p/periodic-seq birth-year-date (t/years 1))]
-    (take 90 life-years)))
+    (take 75 life-years)))
 
 (defn year-weeks [year-date]
   (let [year-no (t/year year-date)
@@ -29,6 +29,8 @@
        (map year-weeks)))
 
 (comment
+  (-> (life-calendar (t/date-time 1985 12 25))
+      first)
   (-> (life-years (t/date-time 1985 12 25))
       first
       year-weeks

@@ -7,14 +7,13 @@
 ; defonce so we do not lose state when hot reloading
 (defonce *birth-date (r/atom (t/date-time 1985 12 25)))
 
-
 (defn life-calendar [birth-date]
-  [:table
+  [:table#calendar
    [:tbody
     (for [year (cal/life-calendar birth-date)]
       [:tr (for [week year
                  :let [wtype (cal/week->type week birth-date)]]
-             [:td (str \[ wtype \])])])]])
+             [:td {:class wtype}])])]])
 
 (defn ui []
   (doall

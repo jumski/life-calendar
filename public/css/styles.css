@@ -1,0 +1,17 @@
+
+* { box-sizing: border-box }
+
+table#calendar {
+  margin: 0 auto;
+  border-spacing: 3px;
+}
+
+table#calendar td {
+  border: none;
+  width: 7px;
+  height: 7px;
+}
+
+table#calendar td.blank { background-color: grey }
+table#calendar td.lived { background-color: red }
+table#calendar td.not-lived { background-color: yellow }
