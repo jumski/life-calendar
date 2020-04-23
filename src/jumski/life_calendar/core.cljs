@@ -1,36 +1,26 @@
 (ns ^:dev/always jumski.life-calendar.core
   (:require [reagent.core :as r]
-            [reagent.dom :as rdom]))
+            [reagent.dom :as rdom]
+            [jumski.life-calendar.calendar :as cal]
+            [cljs-time.core :as t]))
 
 ; defonce so we do not lose state when hot reloading
-(defonce rows-num (r/atom 5))
-(defonce cols-num (r/atom 5))
+(defonce *birth-date (r/atom (t/date-time 1985 12 25)))
 
-(comment
-  (swap! cols-num dec)
-  (swap! cols-num inc)
-  )
 
-(defn create-cols [num body-fn]
-  (for [i (range num)]
-    ^{:key (body-fn i)} [:td (body-fn i)]))
-
-(defn table []
+(defn life-calendar [birth-date]
   [:table
    [:tbody
-    (doall
-      (for [rn (range @rows-num)
-            :let [col-body-fn #(str "row=" rn " col=" %)]]
-        ^{:key rn} [:tr (create-cols @cols-num col-body-fn)]))]])
-
-(defn button [btn-name click-handler]
-  [:button {:on-click click-handler} btn-name])
+    (for [year (cal/life-calendar birth-date)]
+      [:tr (for [week year
+                 :let [wtype (cal/week->type week birth-date)]]
+             [:td (str \[ wtype \])])])]])
 
 (defn ui []
-  [:div
-   [:div [button "+" #(swap! rows-num inc)] "/" [button "-" #(swap! rows-num dec)]],
-   [:div [button "+" #(swap! cols-num inc)] "/" [button "-" #(swap! cols-num dec)]]
-   [table]])
+  (doall
+    (let [birth-date @*birth-date]
+      [:div
+       [life-calendar birth-date]])))
 
 (defn render-ui []
   (let [dom-node (js/document.getElementById "app")]
